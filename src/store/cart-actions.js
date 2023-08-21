@@ -21,7 +21,12 @@ export const fetchCartData = () => {
         return response.json();
       })
       .then((responseData) => {
-        dispatch(cartActions.replaceCart(responseData));
+        dispatch(
+          cartActions.replaceCart({
+            items: responseData.items || [],
+            totalQuantity: responseData.totalQuantity,
+          })
+        );
         dispatch(
           uiActions.showNotification({
             status: "success",
@@ -54,7 +59,13 @@ export const sendCartData = (cart) => {
 
     fetch(
       "https://react-cart-redux-aeff2-default-rtdb.asia-southeast1.firebasedatabase.app/cart.json",
-      { method: "PUT", body: JSON.stringify(cart) }
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          items: cart.items,
+          totalQuantity: cart.totalQuantity,
+        }),
+      }
     )
       .then((response) => {
         if (!response.ok) {
