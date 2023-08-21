@@ -4,7 +4,7 @@ import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 import Notification from "./components/UI/Notification";
-import { uiActions } from "./store/ui-slice";
+import { sendCartData } from "./store/cart-slice";
 
 let isInitial = true;
 
@@ -20,42 +20,7 @@ function App() {
       return;
     }
 
-    dispatch(
-      uiActions.showNotification({
-        status: "pending",
-        title: "Sending...",
-        message: "Sending cart data.",
-      })
-    );
-
-    fetch(
-      "https://react-cart-redux-aeff2-default-rtdb.asia-southeast1.firebasedatabase.app/cart.json",
-      { method: "PUT", body: JSON.stringify(cart) }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Sending cart data failed");
-        }
-        return response.json();
-      })
-      .then((_) => {
-        dispatch(
-          uiActions.showNotification({
-            status: "success",
-            title: "Success",
-            message: "Send cart data successfully.",
-          })
-        );
-      })
-      .catch((error) => {
-        dispatch(
-          uiActions.showNotification({
-            status: "error",
-            title: "Error!",
-            message: error.message,
-          })
-        );
-      });
+    dispatch(sendCartData(cart));
   }, [cart, dispatch]);
 
   return (
